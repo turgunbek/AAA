@@ -1,8 +1,8 @@
 def step2_umbrella():
-    print('взяла зонт')
+    print('Утка-маляр взяла зонт.')
 
 def step2_no_umbrella():
-    print('не взяла зонт')
+    print('Утка-маляр не взяла зонт.')
 
 def step1():
     print(

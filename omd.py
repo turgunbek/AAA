@@ -31,7 +31,6 @@ def step2_no_umbrella():
         ''.join([u'\u0336{}'.format(c) for c in ' на улице ']) + ' в баре...'
     print('\033[91m {}\033[00m'.format(msg_1))
     print('\033[94m {}\033[00m'.format(msg_2))
-    print(msg_2)
 
 if __name__ == '__main__':
     step1()

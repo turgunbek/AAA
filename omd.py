@@ -13,6 +13,7 @@ def step1():
         return step2_umbrella()
     return step2_no_umbrella()
 
+
 def step2_umbrella():
     """
     case of 1st choice - answer 'yes'
@@ -21,6 +22,7 @@ def step2_umbrella():
     msg_2 = 'В бар. Зонт. Утка! Ещё и маляр? КАРЛ! Что мы курим?'
     print('\033[91m {}\033[00m'.format(msg_1))
     print('\033[94m {}\033[00m'.format(msg_2))
+
 
 def step2_no_umbrella():
     """
@@ -31,6 +33,7 @@ def step2_no_umbrella():
         ''.join([u'\u0336{}'.format(c) for c in ' на улице ']) + ' в баре...'
     print('\033[91m {}\033[00m'.format(msg_1))
     print('\033[94m {}\033[00m'.format(msg_2))
+
 
 if __name__ == '__main__':
     step1()

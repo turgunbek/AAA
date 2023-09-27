@@ -32,5 +32,6 @@ def step2_no_umbrella():
     print('\033[91m {}\033[00m'.format(msg_1))
     print('\033[94m {}\033[00m'.format(msg_2))
 
+
 if __name__ == '__main__':
     step1()

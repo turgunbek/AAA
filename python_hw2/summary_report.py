@@ -138,7 +138,7 @@ def save_summary_report(sum_report: dict) -> None:
         for dep in sum_report.keys():
             csv_writer.writerow([dep] + list(sum_report[dep].values()))
 
-    print(f'Файл {file_name} успешно сохранён.')
+    print(f'Файл {file_name} успешно сохранён в директорию со скриптом.')
 
 
 if __name__ == '__main__':

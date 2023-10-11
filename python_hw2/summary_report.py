@@ -34,17 +34,22 @@ def call_menu() -> None:
 def get_data_from_file() -> dict:
     """Считвыает из заданного файла данные 'Corp_Summary.csv'
     и сохраняет их в словарь departments.
-    Также считает максимальную, минимальную и среднюю зарплату
-    по департаментам и добавляет в этот словарь.''
+    Если этого файла нет в директории со скриптом, то программа
+    скачивает файл с указанного сайта, и затем открывает.
     """
 
-    response = urllib.request.urlopen(
-        'https://stepik.org/media/attachments/lesson/578270/Corp_Summary.csv'
-    )
-    data = response.read().decode('utf-8')
-    csvreader = csv.reader(data.splitlines())
-    departments = {}
+    cur_dir = os.path.dirname(os.path.abspath(__file__))
+    file_name = 'Corp_Summary.csv'
+    file_path = os.path.join(cur_dir, file_name)
+    if not os.path.isfile(file_path):
+        url = 'https://stepik.org/media/attachments/lesson/578270/'+file_name
+        urllib.request.urlretrieve(url, file_path)
+    f = open(file_path, 'r', encoding='utf-8')
+    csvreader = csv.reader(f)
     next(csvreader)
+
+    departments = {}
+
     for row in csvreader:
         record = row[0].split(';')
         dep_name = record[1]
@@ -58,14 +63,6 @@ def get_data_from_file() -> dict:
             departments[dep_name]['teams'].add(record[2])
             departments[dep_name]['staff_count'] += 1
             departments[dep_name]['salaries'].append(float(record[-1]))
-
-    for dep_name, dep_content in departments.items():
-        salaries = dep_content['salaries']
-        departments[dep_name]['min_salary'] = min(salaries)
-        departments[dep_name]['max_salary'] = max(salaries)
-        departments[dep_name]['avg_salary'] = \
-            sum(salaries) / dep_content['staff_count']
-
     return departments
 
 
@@ -86,11 +83,20 @@ def print_team_hierarchy(departments: dict) -> None:
 
 
 def make_sum_report(departments: dict) -> dict:
-    """ Создает сводный отчёт по департаментам в виде словаря с ключами
+    """Считает максимальную, минимальную и среднюю зарплату по департаментам
+    и добавляет в этот словарь.
+    Далее создает сводный отчёт по департаментам в виде словаря с ключами
     staff_count, max_salary, min_salary, avg_salary.
     Нужна для печати на экран в пунтке меню (2) и
     для сохранения в csv-файл в пунте меню (3).
     """
+
+    for dep_name, dep_content in departments.items():
+        salaries = dep_content['salaries']
+        departments[dep_name]['min_salary'] = min(salaries)
+        departments[dep_name]['max_salary'] = max(salaries)
+        departments[dep_name]['avg_salary'] = \
+            sum(salaries) / dep_content['staff_count']
 
     sum_report = {}
     for dep in departments.keys():

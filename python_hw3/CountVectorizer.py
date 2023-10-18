@@ -1,3 +1,6 @@
+import string
+
+
 class CountVectorizer:
     """ Класс для работы с текстовым корпусом.
 
@@ -11,7 +14,10 @@ class CountVectorizer:
     feature_names - список для хранения имён признаков
 
     ==========================================================================
-    А также содержит 3 метода (экземпляра):
+    А также содержит 4 метода (экземпляра):
+
+    __clear_corpus_from_specsymbols() - приватный метод, служащий для очискти
+    входного корпуса слов от спецсимволов: !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~
 
     __make_dict_tokens() - приватный метод, создаёт словарь с ключами из
         уникальных токенов и значениями из чисел 0,1,2,...
@@ -32,6 +38,13 @@ class CountVectorizer:
         self.dict_tokens = {}  # Словарь для отображения токенов в индексы
         self.feature_names = []  # Список для хранения имен признаков
 
+    def __clear_corpus_from_specsymbols(self, corpus):
+        corpus_cleaned = [
+            document.translate(str.maketrans('', '', string.punctuation))
+            for document in corpus
+            ]
+        return corpus_cleaned
+
     def __make_dict_tokens(self, corpus):
         self.dict_tokens = {}
         for document in corpus:
@@ -46,7 +59,8 @@ class CountVectorizer:
 
     def fit_transform(self, corpus, lowercase=True):
         self.lowercase = lowercase
-        self.dict_tokens = self.__make_dict_tokens(corpus)
+        corpus_cleaned = self.__clear_corpus_from_specsymbols(corpus)
+        self.dict_tokens = self.__make_dict_tokens(corpus_cleaned)
 
         self.feature_names = [feature for feature, _ in sorted(
             self.dict_tokens.items(), key=lambda x: x[1])]
@@ -57,12 +71,14 @@ class CountVectorizer:
         # get_feature_names() (также как и в оригинальном классе из sklearn)
 
         n = len(self.dict_tokens)
-        count_matrix = [[0] * n for _ in range(len(corpus))]
-        for i, document in enumerate(corpus):
+        count_matrix = [[0] * n for _ in range(len(corpus_cleaned))]
+        for i, document in enumerate(corpus_cleaned):
+            doc_without_symbols = document.translate(
+                str.maketrans('', '', string.punctuation))
             if self.lowercase:
-                tokens = document.lower().split()
+                tokens = doc_without_symbols.lower().split()
             else:
-                tokens = document.split()
+                tokens = doc_without_symbols.split()
             count_matrix[i] = [
                 tokens.count(feature) for feature in self.feature_names
                 ]
@@ -83,6 +99,12 @@ if __name__ == '__main__':
         'Мне очень нравятся данные'
     ]
     vectorizer = CountVectorizer()
+    corpus3 = [
+        'Ave, Caesar, ave!',
+        'Morituri te salutant',
+        'Caesar: Wow, I am cool dude',
+        'Morituri: Oh yeah, very cool guy! Very cool, yeah'
+    ]
 
     print('1st coprus:')
     count_matrix1 = vectorizer.fit_transform(corpus1)
@@ -92,4 +114,9 @@ if __name__ == '__main__':
     print('2nd coprus:')
     count_matrix2 = vectorizer.fit_transform(corpus2)
     print(count_matrix2)
+    print(vectorizer.get_feature_names())
+
+    print('3rd corpus:')
+    count_matrix3 = vectorizer.fit_transform(corpus3)
+    print(count_matrix3)
     print(vectorizer.get_feature_names())

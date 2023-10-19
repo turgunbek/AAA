@@ -98,13 +98,14 @@ if __name__ == '__main__':
         'Мне нравятся данные',
         'Мне очень нравятся данные'
     ]
-    vectorizer = CountVectorizer()
     corpus3 = [
         'Ave, Caesar, ave!',
         'Morituri te salutant',
         'Caesar: Wow, I am cool dude',
         'Morituri: Oh yeah, very cool guy! Very cool, yeah'
     ]
+
+    vectorizer = CountVectorizer()
 
     print('1st coprus:')
     count_matrix1 = vectorizer.fit_transform(corpus1)

@@ -33,19 +33,19 @@ class CountVectorizer:
     sklearn.feature_extraction.text.CountVectorizer)
     """
 
-    def __init__(self, lowercase=True):
+    def __init__(self, lowercase: bool = True):
         self.lowercase = lowercase  # по дефолту все токены -> в нижний регистр
         self.dict_tokens = {}  # Словарь для отображения токенов в индексы
         self.feature_names = []  # Список для хранения имен признаков
 
-    def __clear_corpus_from_specsymbols(self, corpus):
+    def __clear_corpus_from_specsymbols(self, corpus: list[str]) -> list[str]:
         corpus_cleaned = [
             document.translate(str.maketrans('', '', string.punctuation))
             for document in corpus
             ]
         return corpus_cleaned
 
-    def __make_dict_tokens(self, corpus):
+    def __make_dict_tokens(self, corpus: list[str]) -> dict[str]:
         self.dict_tokens = {}
         for document in corpus:
             if self.lowercase:
@@ -57,7 +57,11 @@ class CountVectorizer:
                     self.dict_tokens[token] = len(self.dict_tokens)
         return self.dict_tokens
 
-    def fit_transform(self, corpus, lowercase=True):
+    def fit_transform(
+            self,
+            corpus: list[str],
+            lowercase: bool = True
+            ) -> list[list[int]]:
         self.lowercase = lowercase
         corpus_cleaned = self.__clear_corpus_from_specsymbols(corpus)
         self.dict_tokens = self.__make_dict_tokens(corpus_cleaned)
@@ -85,7 +89,7 @@ class CountVectorizer:
 
         return count_matrix
 
-    def get_feature_names(self):
+    def get_feature_names(self) -> list[str]:
         return self.feature_names
 
 

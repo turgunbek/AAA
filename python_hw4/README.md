@@ -4,7 +4,7 @@
 ## issue-01
 
 Запускать в командной строке (терминале) (из директории, где находится этот файл "issue_01.py"), выполнив команду<br>
-**python -m doctest -o NORMALIZE_WHITESPACE -v issue_01.py**
+`python -m doctest -o NORMALIZE_WHITESPACE -v issue_01.py`
 
 Как и написано в DoD, здесь имеются:
 
@@ -18,7 +18,7 @@
 ## issue-02
 
 Запускать в командной строке (терминале) (из директории, где находится этот файл "issue_02.py"), выполнив команду<br>
-**python -m pytest -v issue_02.py**
+`python -m pytest -v issue_02.py`
 
 Как и написано в DoD, здесь имеются минимум 3 теста.<br>
 Также здесь добавлен тест для обработки исключения *AssertionError*. Для этого в декортатор *@pytest.mark.parametrize()* передается

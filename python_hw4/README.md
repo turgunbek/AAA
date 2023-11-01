@@ -20,7 +20,7 @@
 
 ## issue-02
 
-Запускать в командной строке (из директории, где находится этот файл "issue_02.py"), выполнив команду <div style="background-color: lightgray">python -m pytest -v .\issue_02.py</div>
+Запускать в командной строке (из директории, где находится этот файл "issue_02.py"), выполнив команду $${\color{green}python -m pytest -v .\issue_02.py}$$
 
 Как и написано в DoD, здесь имеются минимум 3 теста.
 Также здесь добавлен тест для обработки исключения <font color="gray">AssertionError</font>. Для этого в декортатор <font color="orange">@pytest.mark.parametrize()</font> передается

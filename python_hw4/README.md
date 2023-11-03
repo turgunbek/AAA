@@ -34,10 +34,12 @@
 `python -m unittest -v issue_03.py`
 
 Сделан 3й issue - написаны 8 тестов на функцию fit_transform() из заданного файла "one_hot_encoder.py".
+
 Как и написано в DoD, здесь имеются:
-&bull; минимум 4 тестовых примера &mdash; 8 тестов
-&bull; минимум 2 метода проверки (assertEqual, assertNotIn, ...) &mdash; имеются указанные методы проверки *asserEqual*, *assertNotIn*, а также *assertTrue*
-&bull; пример с перехватом исключения &mdash; имеется 3 теста с перехватом исключения при помощи assertRaises (2 теста на *TypeError* и 1 тест на *AssertionError*)
+
+&bull; минимум 4 тестовых примера &mdash; 8 тестов<br>
+&bull; минимум 2 метода проверки (assertEqual, assertNotIn, ...) &mdash; имеются указанные методы проверки *asserEqual*, *assertNotIn*, а также *assertTrue*<br>
+&bull; пример с перехватом исключения &mdash; имеется 3 теста с перехватом исключения при помощи assertRaises (2 теста на *TypeError* и 1 тест на *AssertionError*)<br>
 
 Сама тестируемая функция fit_transform() импортируется из данного файла "one_hot_encoder.py", как и было продемонстрировано на лекции.
 

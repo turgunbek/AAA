@@ -1,0 +1,22 @@
+PS B:\Avito\omd\omd\python_hw4> python -m unittest -v issue_03.py
+test_AssertionError (issue_03.TestFitTransformFunction.test_AssertionError)
+Проверка на случай AssertionError - ошибка в длине бинарного ... ok
+test_element_not_in_result (issue_03.TestFitTransformFunction.test_element_not_in_result)
+Проверка на случай AssertNotIn ... ok
+test_empty_input (issue_03.TestFitTransformFunction.test_empty_input)
+Проверка на случай пустого аргумента - должен вызвать TypeError ... ok
+test_mixed_input_types (issue_03.TestFitTransformFunction.test_mixed_input_types)
+Проверка на случай некорректного формата входных данных. ... ok
+test_multiple_args_input (issue_03.TestFitTransformFunction.test_multiple_args_input)
+Проверка на случай нескольких аргументов в виде кортежа строк ... ok
+test_out_datatype (issue_03.TestFitTransformFunction.test_out_datatype)
+Проверка на корректность типов данных резуьтата ... ok
+test_single_arg_input (issue_03.TestFitTransformFunction.test_single_arg_input)
+Проверка на случай одного аргумента в виде строки ... ok
+test_unique_args_input (issue_03.TestFitTransformFunction.test_unique_args_input)
+Проверка на случай, когда все токены уникальные ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.006s
+
+OK

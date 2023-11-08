@@ -3,34 +3,21 @@ import string
 
 class CountVectorizer:
     """ Класс для работы с текстовым корпусом.
-
+    ==========================================================================
     Содержит 3 атрибута (экземпляра):
 
     lowercase = True (default), если приводим все токены к нижнему регистру,
                 иначе оставляем текст как есть
-
     dict_tokens - словарь для отображения токенов в индексы
-
     feature_names - список для хранения имён признаков
 
     ==========================================================================
     А также содержит 4 метода (экземпляра):
 
-    __clear_corpus_from_specsymbols() - приватный метод, служащий для очискти
-    входного корпуса слов от спецсимволов: !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~
-
-    __make_dict_tokens() - приватный метод, создаёт словарь с ключами из
-        уникальных токенов и значениями из чисел 0,1,2,...
-
-    fit_transform() - возвращает терм-документную матрицу.
-    Подразумевается вызов этого метода до вызова метода get_feature_names()
-    (также как и в классе sklearn.feature_extraction.text.CountVectorizer)
-
-    get_feature_names() - возвращает имена всех уникальных токенов,
-    причём функция не подразумевает входных аргументов, и поэтому будет
-    возвращать список токенов, полученных с последнего вызова fit_transform()
-    (Т.е. метод работает по аналогии с оригинальным классом
-    sklearn.feature_extraction.text.CountVectorizer)
+    __clear_corpus_from_specsymbols()
+    __make_dict_tokens()
+    fit_transform()
+    get_feature_names()
     """
 
     def __init__(self, lowercase: bool = True):
@@ -39,6 +26,9 @@ class CountVectorizer:
         self.feature_names = []  # Список для хранения имен признаков
 
     def __clear_corpus_from_specsymbols(self, corpus: list[str]) -> list[str]:
+        """приватный метод, служащий для очискти входного корпуса слов
+        от спецсимволов: !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~
+        """
         corpus_cleaned = [
             document.translate(str.maketrans('', '', string.punctuation))
             for document in corpus
@@ -46,6 +36,9 @@ class CountVectorizer:
         return corpus_cleaned
 
     def __make_dict_tokens(self, corpus: list[str]) -> dict[str]:
+        """приватный метод, создаёт словарь с ключами из
+        уникальных токенов и значениями из чисел 0,1,2,..
+        """
         self.dict_tokens = {}
         for document in corpus:
             if self.lowercase:
@@ -62,6 +55,10 @@ class CountVectorizer:
             corpus: list[str],
             lowercase: bool = True
             ) -> list[list[int]]:
+        """возвращает терм-документную матрицу.
+        Подразумевается вызов этого метода до вызова метода get_feature_names()
+        (также как и в классе sklearn.feature_extraction.text.CountVectorizer)
+        """
         self.lowercase = lowercase
         corpus_cleaned = self.__clear_corpus_from_specsymbols(corpus)
         self.dict_tokens = self.__make_dict_tokens(corpus_cleaned)
@@ -90,7 +87,18 @@ class CountVectorizer:
         return count_matrix
 
     def get_feature_names(self) -> list[str]:
-        return self.feature_names
+        """возвращает имена всех уникальных токенов, причём
+        функция не подразумевает входных аргументов, и поэтому будет возвращать
+        список токенов, полученных с последнего вызова fit_transform()
+        (Т.е. метод работает по аналогии с оригинальным классом
+        sklearn.feature_extraction.text.CountVectorizer)
+        Если же предварительно fit_transform() не вызван, то выведет
+        соответствующее сообщение.
+        """
+        if self.feature_names:
+            return self.feature_names
+        else:
+            print('There is no any features! Firstly get fit_transform()!')
 
 
 if __name__ == '__main__':

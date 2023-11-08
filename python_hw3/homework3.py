@@ -121,14 +121,14 @@ class TfidfTransformer:
     Содержит метод (экземпляра) fit_transform():
     """
 
-    def fit_transform(self, count_matrix: list[list[int]]):
-        """возвращает tfidf = tf * idf заданной матрицы count_matrix
+    def fit_transform(self, countmatrix: list[list[int]]) -> list[list[float]]:
+        """возвращает tfidf = tf * idf заданной матрицы countmatrix
         """
-        n_docs = len(count_matrix)
-        n_tokens = len(count_matrix[0])
-        tf = [[el/sum(line) for el in line] for line in count_matrix]
+        n_docs = len(countmatrix)
+        n_tokens = len(countmatrix[0])
+        tf = [[el/sum(line) for el in line] for line in countmatrix]
         idf = []
-        for row in zip(*count_matrix):
+        for row in zip(*countmatrix):
             counter = sum(int(num > 0) for num in row)
             idf.append(log((n_docs + 1) / (counter + 1)) + 1)
         tfidf_matrix = []
@@ -146,7 +146,7 @@ class TfidfVectorizer(CountVectorizer):
         super().__init__(lowercase=lowercase)
         self.transformer = tf_class()
 
-    def fit_transform(self, corpus: list[str]):
+    def fit_transform(self, corpus: list[str]) -> list[list[float]]:
         count_matrix_numbers = super().fit_transform(corpus)
         return self.transformer.fit_transform(count_matrix_numbers)
 

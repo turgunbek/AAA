@@ -1,4 +1,6 @@
-import string
+from string import punctuation
+from numpy import log
+from numpy import round as np_round
 
 
 class CountVectorizer:
@@ -30,7 +32,7 @@ class CountVectorizer:
         от спецсимволов: !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~
         """
         corpus_cleaned = [
-            document.translate(str.maketrans('', '', string.punctuation))
+            document.translate(str.maketrans('', '', punctuation))
             for document in corpus
             ]
         return corpus_cleaned
@@ -75,7 +77,7 @@ class CountVectorizer:
         count_matrix = [[0] * n for _ in range(len(corpus_cleaned))]
         for i, document in enumerate(corpus_cleaned):
             doc_without_symbols = document.translate(
-                str.maketrans('', '', string.punctuation))
+                str.maketrans('', '', punctuation))
             if self.lowercase:
                 tokens = doc_without_symbols.lower().split()
             else:
@@ -100,36 +102,114 @@ class CountVectorizer:
         else:
             print('There is no any features! Firstly get fit_transform()!')
 
+    def tf_transform(self, corpus: list[str]) -> list[list[float]]:
+        """возращает tf_matrix (term-frequency) заданного корпуса слов
+        """
+        count_matrix = self.fit_transform(corpus)
+        return [[el/sum(line) for el in line] for line in count_matrix]
+
+    def idf_transform(self, corpus: list[str]) -> list[float]:
+        """возвращает idf_matrix (inverse document-frequency) корпуса слов
+        """
+        count_matrix = self.fit_transform(corpus, self.lowercase)
+        n_docs = len(count_matrix)
+        res = []
+        for row in zip(*count_matrix):
+            counter = sum(int(num > 0) for num in row)
+            res.append(log((n_docs + 1) / (counter + 1)) + 1)
+        return res
+
+
+class TfidfTransformer:
+    """ Класс для работы с tf, idf матрицами.
+    ==========================================================================
+    Содержит метод (экземпляра) fit_transform:
+    """
+    def __init__(self) -> None:
+        pass
+
+    def fit_transform(self, count_matrix: list[list[int]]):
+        """возвращает tfidf = tf * idf заданной матрицы count_matrix
+        """
+        n_docs = len(count_matrix)
+        n_tokens = len(count_matrix[0])
+        tf = [[el/sum(line) for el in line] for line in count_matrix]
+        idf = []
+        for row in zip(*count_matrix):
+            counter = sum(int(num > 0) for num in row)
+            idf.append(log((n_docs + 1) / (counter + 1)) + 1)
+        tfidf_matrix = []
+        for k in range(n_docs):
+            tfidf_matrix.append([tf[k][i] * idf[i] for i in range(n_tokens)])
+        return tfidf_matrix
+
+
+class TfidfVectorizer(CountVectorizer):
+    """ Класс, наследующий CountVectorizer, и композитный с TfidfTransformer
+    ==========================================================================
+    Переопределяет метод fit_transform
+    """
+    def __init__(self, tf_class=TfidfTransformer, lowercase=True):
+        super().__init__(lowercase)
+        self.transformer = tf_class()
+
+    def fit_transform(self, corpus: list[str], lowercase=True):
+        count_matrix_numbers = super().fit_transform(corpus)
+        return self.transformer.fit_transform(count_matrix_numbers)
+
 
 if __name__ == '__main__':
+    print('Задания #1-2-3: CountVectorizer: ', end='')
+    print('fit_transform(), tf_transform(), idf_transform()')
+
     corpus1 = [
         'Crock Pot Pasta Never boil pasta again',
         'Pasta Pomodoro Fresh ingredients Parmesan to taste'
         ]
     corpus2 = [
         'Мне нравятся данные',
-        'Мне очень нравятся данные'
+        'Мне очень нравятся данные',
+        'особенно большие данные',
+        'Здесь просто проверка на кириллицу'
     ]
     corpus3 = [
         'Ave, Caesar, ave!',
-        'Morituri te salutant',
+        'Morituri te salutant!!!',
         'Caesar: Wow, I am cool dude',
         'Morituri: Oh yeah, very cool guy! Very cool, yeah'
     ]
 
+    corpuses = [corpus1, corpus2, corpus3]
+
     vectorizer = CountVectorizer()
 
-    print('1st coprus:')
-    count_matrix1 = vectorizer.fit_transform(corpus1)
-    print(count_matrix1)
-    print(vectorizer.get_feature_names())
+    for i, corpus in enumerate(corpuses):
+        print(f'coprus #{i + 1}:')
+        count_matrix = vectorizer.fit_transform(corpus)
+        tf_matrix = vectorizer.tf_transform(corpus)
+        idf_matrix = vectorizer.idf_transform(corpus)
+        print(count_matrix)
+        print(vectorizer.get_feature_names())
+        print(np_round(tf_matrix, 3))
+        print(np_round(idf_matrix, 3))
+        print()
 
-    print('2nd coprus:')
-    count_matrix2 = vectorizer.fit_transform(corpus2)
-    print(count_matrix2)
-    print(vectorizer.get_feature_names())
+    print('Задание #4: TfidfTransformer().fit_transform()')
+    count_matrix = [
+        [1, 1, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1]
+    ]
+    transformer = TfidfTransformer()
+    tfidf_matrix = transformer.fit_transform(count_matrix)
+    print(np_round(tfidf_matrix, 3))
+    print()
 
-    print('3rd corpus:')
-    count_matrix3 = vectorizer.fit_transform(corpus3)
-    print(count_matrix3)
+    print('Задание #5: TfidfVectorizer().fit_transform()')
+    corpus = [
+        'Crock Pot Pasta Never boil pasta again',
+        'Pasta Pomodoro Fresh ingredients Parmesan to taste'
+    ]
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform(corpus)
     print(vectorizer.get_feature_names())
+    print(np_round(tfidf_matrix, 3))

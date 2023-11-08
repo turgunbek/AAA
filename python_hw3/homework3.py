@@ -142,6 +142,7 @@ class TfidfVectorizer(CountVectorizer):
     ==========================================================================
     Переопределяет метод (экземпляра) fit_transform()
     """
+
     def __init__(self, tf_class=TfidfTransformer, lowercase=True):
         super().__init__(lowercase=lowercase)
         self.transformer = tf_class()

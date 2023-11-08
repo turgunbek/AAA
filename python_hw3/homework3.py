@@ -52,16 +52,11 @@ class CountVectorizer:
                     self.dict_tokens[token] = len(self.dict_tokens)
         return self.dict_tokens
 
-    def fit_transform(
-            self,
-            corpus: list[str],
-            lowercase: bool = True
-            ) -> list[list[int]]:
+    def fit_transform(self, corpus: list[str]) -> list[list[int]]:
         """возвращает терм-документную матрицу.
         Подразумевается вызов этого метода до вызова метода get_feature_names()
         (также как и в классе sklearn.feature_extraction.text.CountVectorizer)
         """
-        self.lowercase = lowercase
         corpus_cleaned = self.__clear_corpus_from_specsymbols(corpus)
         self.dict_tokens = self.__make_dict_tokens(corpus_cleaned)
 
@@ -111,7 +106,7 @@ class CountVectorizer:
     def idf_transform(self, corpus: list[str]) -> list[float]:
         """возвращает idf_matrix (inverse document-frequency) корпуса слов
         """
-        count_matrix = self.fit_transform(corpus, self.lowercase)
+        count_matrix = self.fit_transform(corpus)
         n_docs = len(count_matrix)
         res = []
         for row in zip(*count_matrix):
@@ -123,10 +118,8 @@ class CountVectorizer:
 class TfidfTransformer:
     """ Класс для работы с tf, idf матрицами.
     ==========================================================================
-    Содержит метод (экземпляра) fit_transform:
+    Содержит метод (экземпляра) fit_transform():
     """
-    def __init__(self) -> None:
-        pass
 
     def fit_transform(self, count_matrix: list[list[int]]):
         """возвращает tfidf = tf * idf заданной матрицы count_matrix
@@ -147,13 +140,13 @@ class TfidfTransformer:
 class TfidfVectorizer(CountVectorizer):
     """ Класс, наследующий CountVectorizer, и композитный с TfidfTransformer
     ==========================================================================
-    Переопределяет метод fit_transform
+    Переопределяет метод (экземпляра) fit_transform()
     """
     def __init__(self, tf_class=TfidfTransformer, lowercase=True):
-        super().__init__(lowercase)
+        super().__init__(lowercase=lowercase)
         self.transformer = tf_class()
 
-    def fit_transform(self, corpus: list[str], lowercase=True):
+    def fit_transform(self, corpus: list[str]):
         count_matrix_numbers = super().fit_transform(corpus)
         return self.transformer.fit_transform(count_matrix_numbers)
 
@@ -209,7 +202,7 @@ if __name__ == '__main__':
         'Crock Pot Pasta Never boil pasta again',
         'Pasta Pomodoro Fresh ingredients Parmesan to taste'
     ]
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(corpus)
-    print(vectorizer.get_feature_names())
+    vectorizer_tfid = TfidfVectorizer()
+    tfidf_matrix = vectorizer_tfid.fit_transform(corpus)
+    print(vectorizer_tfid.get_feature_names())
     print(np_round(tfidf_matrix, 3))
